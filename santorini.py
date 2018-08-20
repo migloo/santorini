@@ -12,14 +12,16 @@ class Player:
     def __init__(self, side):
         self.side = side
         self.COUNTER = 0
-        self.tactic_depth = 0
+        self.tactic_depth = 2
 
     def evaluate(self, game): # c'est une position de jeu à considérer après l'action du joueur Player.
         def pawn_score(pawn, mult):
             h = game.board[pawn[0]][pawn[1]]
             return (h*(h!=3) + 100*(h==3)) * mult
-        return pawn_score(game.pawns[self.side][0], 1.0) + pawn_score(game.pawns[self.side][1], 1.0) + \
-            pawn_score(game.pawns[1 - self.side][0], -1.0) + pawn_score(game.pawns[1 - self.side][1], -1.0)
+        return pawn_score(game.pawns[self.side][0], 1.0) + \
+               pawn_score(game.pawns[self.side][1], 1.0) + \
+               pawn_score(game.pawns[1 - self.side][0], -1.0) + \
+               pawn_score(game.pawns[1 - self.side][1], -1.0)
 
     def min_play(self, game, depth):
         if game.end_of_game() or (depth == 0):
@@ -45,7 +47,7 @@ class Player:
 class Santorini:
     def __init__(self):
         # constructeur
-        self.pawns = [[(2,3),(3,2)],[(3,4),(4,3)]]
+        self.pawns = [[(1,2),(2,1)],[(2,3),(3,2)]]
         self.board = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
         self.EOG = False
         self.PLAYER_TO_PLAY = PLAYER0
@@ -99,4 +101,8 @@ def __main__():
         player = player0 if game.PLAYER_TO_PLAY == 0 else player1
         game.update(player.play(game)) # modifie l'état du jeu.
         game.PLAYER_TO_PLAY = 1 - player.side
-    return not PLAYER_TO_PLAY
+    return not game.PLAYER_TO_PLAY
+
+# implémenter alpha beta pruning.
+# implémenter multiprocessing.
+# passer le code en Cython ou en Go.
